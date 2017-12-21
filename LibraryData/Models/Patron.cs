@@ -13,6 +13,7 @@ namespace LibraryData.Models
         public DateTime DateOfBirth { get; set; }
         public string TelephoneNumber { get; set; }
 
-       //public virtual librarycard librarycard { get; set; }
+        public virtual LibraryCard Librarycard { get; set; }
+        public virtual LibraryBranch HomeLibraryBranch { get; set; }
     }
 }
