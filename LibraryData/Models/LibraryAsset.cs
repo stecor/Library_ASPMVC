@@ -16,7 +16,7 @@ namespace LibraryData.Models
         public int Year { get; set; }
 
         [Required]
-        public string Status { get; set; }
+        public Status Status { get; set; }
 
         [Required]
         public decimal Cost { get; set; }

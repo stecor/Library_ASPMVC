@@ -9,16 +9,6 @@ namespace LibraryData.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<int>(
-                name: "HomeLibraryBranchId",
-                table: "Patrons",
-                nullable: true);
-
-            migrationBuilder.AddColumn<int>(
-                name: "LibrarycardId",
-                table: "Patrons",
-                nullable: true);
-
             migrationBuilder.CreateTable(
                 name: "LibraryBranches",
                 columns: table => new
@@ -88,6 +78,37 @@ namespace LibraryData.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Patrons",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Address = table.Column<string>(nullable: true),
+                    DateOfBirth = table.Column<DateTime>(nullable: false),
+                    FirstName = table.Column<string>(nullable: true),
+                    HomeLibraryBranchId = table.Column<int>(nullable: true),
+                    LastName = table.Column<string>(nullable: true),
+                    LibrarycardId = table.Column<int>(nullable: true),
+                    TelephoneNumber = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Patrons", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Patrons_LibraryBranches_HomeLibraryBranchId",
+                        column: x => x.HomeLibraryBranchId,
+                        principalTable: "LibraryBranches",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Patrons_LibraryCards_LibrarycardId",
+                        column: x => x.LibrarycardId,
+                        principalTable: "LibraryCards",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "LibraryAssets",
                 columns: table => new
                 {
@@ -101,7 +122,7 @@ namespace LibraryData.Migrations
                     ImageUrl = table.Column<string>(nullable: true),
                     LocationId = table.Column<int>(nullable: true),
                     NumberOfCopies = table.Column<int>(nullable: false),
-                    Status = table.Column<string>(nullable: false),
+                    StatusId = table.Column<int>(nullable: false),
                     Title = table.Column<string>(nullable: false),
                     Year = table.Column<int>(nullable: false),
                     Director = table.Column<string>(nullable: true)
@@ -115,6 +136,12 @@ namespace LibraryData.Migrations
                         principalTable: "LibraryBranches",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_LibraryAssets_Statuses_StatusId",
+                        column: x => x.StatusId,
+                        principalTable: "Statuses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -201,16 +228,6 @@ namespace LibraryData.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Patrons_HomeLibraryBranchId",
-                table: "Patrons",
-                column: "HomeLibraryBranchId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Patrons_LibrarycardId",
-                table: "Patrons",
-                column: "LibrarycardId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_BranchHours_BranchId",
                 table: "BranchHours",
                 column: "BranchId");
@@ -250,33 +267,24 @@ namespace LibraryData.Migrations
                 table: "LibraryAssets",
                 column: "LocationId");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_Patrons_LibraryBranches_HomeLibraryBranchId",
-                table: "Patrons",
-                column: "HomeLibraryBranchId",
-                principalTable: "LibraryBranches",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+            migrationBuilder.CreateIndex(
+                name: "IX_LibraryAssets_StatusId",
+                table: "LibraryAssets",
+                column: "StatusId");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_Patrons_LibraryCards_LibrarycardId",
+            migrationBuilder.CreateIndex(
+                name: "IX_Patrons_HomeLibraryBranchId",
                 table: "Patrons",
-                column: "LibrarycardId",
-                principalTable: "LibraryCards",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+                column: "HomeLibraryBranchId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Patrons_LibrarycardId",
+                table: "Patrons",
+                column: "LibrarycardId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Patrons_LibraryBranches_HomeLibraryBranchId",
-                table: "Patrons");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Patrons_LibraryCards_LibrarycardId",
-                table: "Patrons");
-
             migrationBuilder.DropTable(
                 name: "BranchHours");
 
@@ -290,7 +298,7 @@ namespace LibraryData.Migrations
                 name: "Holds");
 
             migrationBuilder.DropTable(
-                name: "Statuses");
+                name: "Patrons");
 
             migrationBuilder.DropTable(
                 name: "LibraryAssets");
@@ -301,21 +309,8 @@ namespace LibraryData.Migrations
             migrationBuilder.DropTable(
                 name: "LibraryBranches");
 
-            migrationBuilder.DropIndex(
-                name: "IX_Patrons_HomeLibraryBranchId",
-                table: "Patrons");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Patrons_LibrarycardId",
-                table: "Patrons");
-
-            migrationBuilder.DropColumn(
-                name: "HomeLibraryBranchId",
-                table: "Patrons");
-
-            migrationBuilder.DropColumn(
-                name: "LibrarycardId",
-                table: "Patrons");
+            migrationBuilder.DropTable(
+                name: "Statuses");
         }
     }
 }

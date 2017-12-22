@@ -121,8 +121,7 @@ namespace LibraryData.Migrations
 
                     b.Property<int>("NumberOfCopies");
 
-                    b.Property<string>("Status")
-                        .IsRequired();
+                    b.Property<int>("StatusId");
 
                     b.Property<string>("Title")
                         .IsRequired();
@@ -132,6 +131,8 @@ namespace LibraryData.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("LocationId");
+
+                    b.HasIndex("StatusId");
 
                     b.ToTable("LibraryAssets");
 
@@ -300,6 +301,11 @@ namespace LibraryData.Migrations
                     b.HasOne("LibraryData.Models.LibraryBranch", "Location")
                         .WithMany("LibraryAssets")
                         .HasForeignKey("LocationId");
+
+                    b.HasOne("LibraryData.Models.Status", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("LibraryData.Models.Patron", b =>
